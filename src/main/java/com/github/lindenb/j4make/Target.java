@@ -28,7 +28,6 @@ History:
 */
 package com.github.lindenb.j4make;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -67,27 +66,18 @@ public abstract class Target
 		return targetName.hashCode();
 		}
 	
+	/** name of the target, as declared in the makefile */
 	public String getName()
 		{
 		return this.targetName;
 		}
 	
-	public File getFile()
-		{
-		return new File(getName());
-		}
 	
-	public boolean exists()
-		{
-		return getFile().exists();	
-		}
-	
-	public long lastModified()
-		{
-		return getFile().lastModified();
-		}
-	
+	/** get graph owner */
 	public abstract Graph getGraph();
+	
+	/** get node id */
+	public abstract long getNodeId();
 	
 	@Override
 	public boolean equals(Object obj) {
@@ -95,6 +85,7 @@ public abstract class Target
 		if(obj == null || !(obj instanceof Target)) return false;
 		final Target other = Target.class.cast(obj);
 		return getName().equals(other.getName()) &&
+				getNodeId()==other.getNodeId() && 
 				getGraph()==other.getGraph()
 				;
 		}

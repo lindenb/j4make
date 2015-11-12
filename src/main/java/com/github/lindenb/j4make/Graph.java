@@ -39,11 +39,12 @@ import org.slf4j.LoggerFactory;
 
 public class Graph
 	{
+	private static long ID_GENERATOR = 1L;
 	private static final Logger LOG= LoggerFactory.getLogger(Graph.class);
 	private static final String ROOT_NAME="<ROOT>";
 	private Map<String,Target> name2target=new java.util.HashMap<String,Target>();
 	
-	public Graph()
+	private Graph()
 		{
 		this.name2target.put(ROOT_NAME, new TargetImpl(ROOT_NAME));
 		}
@@ -178,9 +179,14 @@ public class Graph
 		}
 	private class TargetImpl extends Target
 		{
+		private long _id = ID_GENERATOR++;
 		TargetImpl(final String name)
 			{
 			super(name);
+			}
+		@Override
+		public long getNodeId() {
+			return this._id;
 			}
 		@Override
 		public Graph getGraph() {
