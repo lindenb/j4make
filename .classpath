@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="lib" path="lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
