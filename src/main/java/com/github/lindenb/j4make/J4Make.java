@@ -259,6 +259,7 @@ public class J4Make
 				}
 			return 0;
 		} catch (Exception e) {
+			LOG.error("FAILURE", e);
 			return -1;
 		} finally
 		{
