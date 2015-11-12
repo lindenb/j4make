@@ -29,11 +29,14 @@ History:
 package com.github.lindenb.j4make;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -49,20 +52,28 @@ import org.apache.commons.cli.Options;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/** main application */
 public class J4Make
 	{
 	private static final Logger LOG= LoggerFactory.getLogger(J4Make.class);
+	/** current graph */
 	private Graph graph = null;
-	private enum FORMAT {XML,DOT,GEXF};
+	/** output format */
+	private enum FORMAT {XML,DOT,GEXF,RDF};
 	
+	private J4Make() {
+	}
+	
+	/** current version */
 	public String getVersion()
 	{
 		return "1.0";
 	}
 	
+	/** write graph as dot */
 	private void writeAsDot(PrintStream out)
 	{
-        System.out.println("digraph G {");
+        out.println("digraph G {");
         for(Target t:this.graph.getTargets())
             {
             out.println("n"+t.getNodeId()+"[label=\""+t.getName()+"\"];");
@@ -74,9 +85,10 @@ public class J4Make
             	out.println("n"+c.getNodeId()+" -> n"+t.getNodeId()+";");
                 }
             }
-        System.out.println("}");
+        out.println("}");
 	}
 
+	/** write graph as gephi/gexf */
 	private void writeAsGexf(OutputStream out) throws XMLStreamException
 		{
 			XMLOutputFactory xof = XMLOutputFactory.newFactory();
@@ -149,7 +161,7 @@ public class J4Make
 			w.flush();
 		}
 	
-	
+	/** write graph as XML */
 	private void writeAsXml(OutputStream out) throws XMLStreamException
 		{
 			XMLOutputFactory xof = XMLOutputFactory.newFactory();
@@ -187,6 +199,68 @@ public class J4Make
 		w.flush();
 		}
 	
+	/** write graph as XML */
+	private void writeAsRDF(OutputStream out) throws XMLStreamException
+		{
+		final SimpleDateFormat ISO8601DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		final String RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+		final String NS="https://github.com/lindenb/j4make#";
+
+		
+			XMLOutputFactory xof = XMLOutputFactory.newFactory();
+			XMLStreamWriter w = xof.createXMLStreamWriter(out, "UTF-8");
+			w.writeStartDocument("UTF-8", "1.0");
+			w.writeStartElement("rdf","RDF",RDF);
+			w.writeNamespace("rdf", RDF);
+			w.writeNamespace("m", NS);
+			
+	
+			for(final Target t:this.graph.getTargets())
+			{
+			File tFile = new File(t.getName());
+			w.writeStartElement("m","Target",NS);
+			w.writeAttribute("rdf",RDF,"about", tFile.toURI().toString());
+			if(tFile.exists() && tFile.isFile() && tFile.canRead())
+				{
+				long fSIze = tFile.length();
+				Date lastModified = new Date(tFile.lastModified());
+				w.writeStartElement("m", "length", NS);
+				w.writeAttribute("rdf", RDF, "datatype",
+						"http://www.w3.org/2001/XMLSchema#unsignedLong");
+				w.writeCharacters(String.valueOf(fSIze));
+				w.writeEndElement();
+				
+				w.writeStartElement("m", "lastModified", NS);
+				w.writeAttribute("rdf", RDF, "datatype",
+						"http://www.w3.org/2001/XMLSchema#dateTime");
+				w.writeCharacters(ISO8601DATEFORMAT.format(lastModified));
+				w.writeEndElement();
+				}
+			
+			
+			for(final Target c:t.getPrerequisites())
+				{
+				w.writeEmptyElement("m","hasPrerequisite",NS);
+				w.writeAttribute("rdf",RDF,"resource",
+						new File(c.getName()).toURI().toString()
+						);
+				}
+			
+			w.writeStartElement("m","shell",NS);
+			for(final String line:t.getShellLines())
+				{
+				w.writeCharacters(line);
+				w.writeCharacters("\n");
+				}
+			w.writeEndElement();
+			
+			w.writeEndElement();
+			}
+		w.writeEndElement();
+		w.writeEndDocument();
+		w.flush();
+		}
+
 	public int instanceMain(final String args[])
 		{
 		FORMAT fmt=FORMAT.DOT;
@@ -255,6 +329,7 @@ public class J4Make
 				case XML: writeAsXml(System.out); break;
 				case GEXF: writeAsGexf(System.out); break;
 				case DOT: writeAsDot(System.out); break;
+				case RDF: writeAsRDF(System.out);break;
 				default: throw new IllegalArgumentException(""+fmt);
 				}
 			return 0;

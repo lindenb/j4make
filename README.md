@@ -13,7 +13,7 @@ an executable jar is created in `dist/j4make.jar`
 ## Usage
 
 ```
- -f,--format <FORMAT>   output format one of [XML, DOT, GEXF]
+ -f,--format <FORMAT>   output format one of [XML, DOT, GEXF, RDF]
  -h,--help              Print Help and exit
  -v,--version           Print version and exit
 ```
@@ -153,6 +153,34 @@ $ make -ndBr | java -jar dist/j4make.jar --format gexf 2> /dev/null   | xmllint 
     </edges>
   </graph>
 </gexf>
+```
+
+### RDF output
+
+```
+<?xml version="1.0" encoding="UTF-8"?><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:m="https://github.com/lindenb/j4make#"><m:Target rdf:about="file:/home/lindenb/src/j4make/all"><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/j4make"/><m:shell></m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar"><m:length rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">33088</m:length><m:lastModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-11-10T21:14:11+0100</m:lastModified><m:shell>mkdir -p lib/org/slf4j/slf4j-api/1.7.13/ &amp;&amp; wget -O "lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar" "http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar"
+</m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar"><m:length rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">284184</m:length><m:lastModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2014-11-06T15:15:33+0100</m:lastModified><m:shell>mkdir -p lib/commons-codec/commons-codec/1.10/ &amp;&amp; wget -O "lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar" "http://central.maven.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.jar"
+</m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/Makefile"><m:length rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">2454</m:length><m:lastModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-11-12T16:41:57+0100</m:lastModified><m:shell></m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/j4make"><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/src/main/java/com/github/lindenb/j4make/J4Make.java"/><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar"/><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar"/><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar"/><m:shell>mkdir -p /home/lindenb/src/j4make/_tmp/META-INF /home/lindenb/src/j4make/src/main/generated-sources/java/com/github/lindenb/j4make/ /home/lindenb/src/j4make/dist
+#compile
+javac -d /home/lindenb/src/j4make/_tmp -g -classpath "lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar:lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar:lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar" -sourcepath /home/lindenb/src/j4make/src/main/java:/home/lindenb/src/j4make/src/main/generated-sources/java /home/lindenb/src/j4make/src/main/java/com/github/lindenb/j4make/J4Make.java
+#create META-INF/MANIFEST.MF
+echo "Manifest-Version: 1.0" &gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+echo "Main-Class: com.github.lindenb.j4make.J4Make" &gt;&gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+echo "Class-Path: /home/lindenb/src/j4make/lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar /home/lindenb/src/j4make/lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar /home/lindenb/src/j4make/lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar /home/lindenb/src/j4make/dist/j4make.jar" | fold -w 71 | awk '{printf("%s%s\n",(NR==1?"": " "),$0);}' &gt;&gt;  /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+echo -n "Git-Hash: " &gt;&gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+cat /home/lindenb/src/j4make/.git/refs/heads/master  &gt;&gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF 
+echo -n "Compile-Date: " &gt;&gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+date +%Y-%m-%d:%H-%m-%S &gt;&gt; /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF
+#create jar
+jar cfm /home/lindenb/src/j4make/dist/j4make.jar /home/lindenb/src/j4make/_tmp/META-INF/MANIFEST.MF  -C /home/lindenb/src/j4make/_tmp .
+#create bash executable
+echo '#!/bin/bash' &gt; /home/lindenb/src/j4make/dist/j4make
+echo 'java -Dfile.encoding=UTF8 -Xmx500m    -cp "/home/lindenb/src/j4make/lib/commons-codec/commons-codec/1.10/commons-codec-1.10.jar:/home/lindenb/src/j4make/lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar:/home/lindenb/src/j4make/lib/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar:/home/lindenb/src/j4make/dist/j4make.jar" com.github.lindenb.j4make.J4Make $*' &gt;&gt; /home/lindenb/src/j4make/dist/j4make
+chmod  ugo+rx /home/lindenb/src/j4make/dist/j4make
+#cleanup
+rm -rf /home/lindenb/src/j4make/_tmp
+</m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/%3CROOT%3E"><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/Makefile"/><m:hasPrerequisite rdf:resource="file:/home/lindenb/src/j4make/all"/><m:shell></m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar"><m:length rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">52988</m:length><m:lastModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-06-14T12:06:20+0200</m:lastModified><m:shell>mkdir -p lib/commons-cli/commons-cli/1.3.1/ &amp;&amp; wget -O "lib/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar" "http://central.maven.org/maven2/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar"
+</m:shell></m:Target><m:Target rdf:about="file:/home/lindenb/src/j4make/src/main/java/com/github/lindenb/j4make/J4Make.java"><m:length rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">9875</m:length><m:lastModified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2015-11-12T20:13:52+0100</m:lastModified><m:shell></m:shell></m:Target></rdf:RDF>
 ```
 
 ## Author
