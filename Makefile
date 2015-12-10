@@ -62,9 +62,12 @@ $(1)  : ${htsjdk.jars} \
 
 endef
 
-.PHONY: all
+.PHONY: all test
 
 all: j4make
+
+test: j4make
+	${MAKE} -dnrB j4make | java -jar dist/j4make.jar -f XML  | xmllint -
 
 $(eval $(call compile-cmd,j4make,com.github.lindenb.j4make.J4Make,${commons.codec.jars}))
 

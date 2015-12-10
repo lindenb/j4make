@@ -2,6 +2,9 @@
 
 java Makefile Graph parser 
 
+[![Build Status](https://travis-ci.org/lindenb/j4make.svg)](https://travis-ci.org/lindenb/j4make)
+
+
 # Compilation
 
 ```
