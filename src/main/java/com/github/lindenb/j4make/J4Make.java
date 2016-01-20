@@ -119,16 +119,54 @@ public class J4Make
     		w.writeStartElement("attributes");
     		w.writeAttribute("class","node");
     		w.writeAttribute("mode","static");
-    		    		
+    			w.writeStartElement("attribute");
+    				w.writeAttribute("id", "exists");
+    				w.writeAttribute("title", "exists");
+    				w.writeAttribute("type", "boolean");
+    				w.writeStartElement("default");
+    				w.writeCharacters("false");
+    				w.writeEndElement();
+    			w.writeEndElement();
+    			w.writeStartElement("attribute");
+					w.writeAttribute("id", "filesize");
+					w.writeAttribute("title", "filesize");
+					w.writeAttribute("type", "int");
+					w.writeStartElement("default");
+					w.writeCharacters("-1");
+					w.writeEndElement();
+				w.writeEndElement();
+    			w.writeStartElement("attribute");
+					w.writeAttribute("id", "timestamp");
+					w.writeAttribute("title", "timestamp");
+					w.writeAttribute("type", "int");
+					w.writeStartElement("default");
+					w.writeCharacters("-1");
+					w.writeEndElement();
+				w.writeEndElement();
+   			
+    		
+    		
     		w.writeEndElement();//attributes
     		
     		/* nodes */
     		w.writeStartElement("nodes");
-    		for(Target t:this.graph.getTargets())
+    		for(final Target t:this.graph.getTargets())
     			{
     			w.writeStartElement("node");
     			w.writeAttribute("id", String.valueOf(t.getNodeId()));
-    			w.writeAttribute("label", t.getName());    			
+    			w.writeAttribute("label", t.getName()); 
+    			final File targetFile = new File(t.getName());
+    			w.writeStartElement("attvalues");
+    				w.writeEmptyElement("attvalue");
+    					w.writeAttribute("for", "exists");
+    					w.writeAttribute("value",String.valueOf(targetFile.exists()));
+        			w.writeEmptyElement("attvalue");
+    					w.writeAttribute("for", "filesize");
+    					w.writeAttribute("value",String.valueOf(targetFile.exists()?targetFile.length():-1L));
+        			w.writeEmptyElement("attvalue");
+    					w.writeAttribute("for", "timestamp");
+    					w.writeAttribute("value",String.valueOf(targetFile.exists()?targetFile.lastModified():-1L));
+    			w.writeEndElement();//attvalues
     			w.writeEndElement();
     			}
 
@@ -173,6 +211,13 @@ public class J4Make
 			{
 			w.writeStartElement("target");
 			w.writeAttribute("name", t.getName());
+			
+			final File targetFile = new File(t.getName());
+			w.writeAttribute("exists",String.valueOf(targetFile.exists()));
+			w.writeAttribute("file-size",String.valueOf(targetFile.exists()?targetFile.length():-1L));
+			w.writeAttribute("timestamp",String.valueOf(targetFile.exists()?targetFile.lastModified():-1L));
+
+			
 			
 			w.writeStartElement("prerequisites");
 			for(final Target c:t.getPrerequisites())

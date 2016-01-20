@@ -30,8 +30,10 @@ package com.github.lindenb.j4make;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,8 @@ public abstract class Target
 	private String targetName;
 	/** all prerequistites */
 	protected Set<Target> _prerequisites= new LinkedHashSet<>();
+	/** user data */
+	private Map<String, Object> userData=null;
 	
 	Target(final String targetName)
 		{
@@ -92,6 +96,15 @@ public abstract class Target
 	
 	public List<String> getShellLines() {
 		return shellLines;
+	}
+	
+	public Object getUserData(final String key) {
+		return userData==null?null:userData.get(key);
+	}
+	
+	public void putUserData(final String key,final Object value) {
+		if(this.userData==null) this.userData=new HashMap<String, Object>();
+		this.userData.put(key, value);
 	}
 	
 	@Override
