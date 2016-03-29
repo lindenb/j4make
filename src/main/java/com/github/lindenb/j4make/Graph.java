@@ -75,7 +75,7 @@ public class Graph
 		return t;
 		}
 	
-	private static String targetName(String line)
+	private static String targetName(final String line)
 		{
 		int b = line.indexOf('`');
 		if(b==-1) b=line.indexOf('\'');//GNU make 4.0
@@ -88,54 +88,16 @@ public class Graph
 		return line.substring(b+1, e);
 		}
 	
-	public static Graph parse(BufferedReader in) throws IOException
+	public static Graph parse(final BufferedReader in) throws IOException
 		{
 		final Graph g = new Graph();
 		g.scan(ROOT_NAME,in);
 		return g;
-		}
-	
-	/*
-	private Target _targetByName(final Cursor c,final String rootName)
-		{
-		final DatabaseEntry key0 = new DatabaseEntry();
-		DatabaseEntry data0 = new DatabaseEntry();
-		StringBinding.stringToEntry(rootName, key0);
-		OperationStatus status = c.getSearchKey(key0, data0, LockMode.DEFAULT);
-		if( status !=  OperationStatus.SUCCESS )
-			{
-			final Target t = new Target(rootName);
-			this.bindings.objectToEntry(t, data0);
-			++_targetcount;
-			if(_targetcount%500 == 0) LOG.info("creating target "+rootName+ " count(Targets)="+_targetcount);
-			if( c.put(key0,data0)!=OperationStatus.SUCCESS)
-				{
-				throw new RuntimeException("Cannot insert "+rootName);
-				}
-			return t;
-			}
-		else
-			{
-			return this.bindings.entryToObject(data0);
-			}
-		}
-	
-	private Target _persist(final Cursor c,final Target t)
-		{
-		final DatabaseEntry data0 = new DatabaseEntry();
-		this.bindings.objectToEntry(t, data0);
-		if(c.putCurrent(data0)!=OperationStatus.SUCCESS)
-			{
-			throw new RuntimeException("Cannot persists "+t);
-			}
-		return t;
-		}*/
-	
-	
+		}	
 	
 	private void scan(
 			final String rootName ,
-			BufferedReader in) throws IOException
+			final BufferedReader in) throws IOException
 		{		
 		String line;
 		while((line=in.readLine())!=null)

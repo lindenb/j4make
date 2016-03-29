@@ -84,7 +84,7 @@ public abstract class Target
 	public abstract long getNodeId();
 	
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if(obj == this) return true;
 		if(obj == null || !(obj instanceof Target)) return false;
 		final Target other = Target.class.cast(obj);

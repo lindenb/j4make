@@ -22,8 +22,8 @@ commons.codec.jars = \
 	$(lib.dir)/commons-codec/commons-codec/1.10/commons-codec-1.10.jar
 
 slf4j.jars  = \
-	$(lib.dir)/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar
-
+	$(lib.dir)/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar \
+	$(lib.dir)/org/slf4j/slf4j-simple/1.7.13/slf4j-simple-1.7.13.jar \
 
 apache.commons.cli.jars  = \
 	$(lib.dir)/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar
