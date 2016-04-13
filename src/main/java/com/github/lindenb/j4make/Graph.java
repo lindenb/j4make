@@ -111,7 +111,7 @@ public class Graph
 		        TargetImpl.class.cast(root).addPrerequisite(child);
 		        this.scan(childName,in);
 		        }
-		    else if(line.startsWith("make[") && line.contains("]: Entering directory")) {
+		    else if(line.startsWith("make") && line.contains(": Entering directory")) {
 			//ignore
 			}
 		    else if(line.startsWith("make: Leaving directory")) {
@@ -124,6 +124,12 @@ public class Graph
 		    	 while((line=in.readLine())!=null)
 		    	 	{
 		    		if(line.trim().startsWith("Successfully remade target file")) break;
+		   		else if(line.startsWith("make") && line.contains(": Entering directory")) {
+					continue;
+					}
+		                else if(line.startsWith("make: Leaving directory")) {
+			                continue;
+			                }
 		    		t.shellLines.add(line);
 		    	 	}
 		    	 }

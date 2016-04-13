@@ -69,6 +69,7 @@ all: j4make
 test: j4make
 	${MAKE} -dnrB j4make | java -jar dist/j4make.jar -f XML  | xmllint --format -
 	${MAKE} -dnrB j4make | java -jar dist/j4make.jar -f GEXF  | xmllint --format -
+	${MAKE} -dnrB -C . -f Makefile j4make | java -jar dist/j4make.jar -f XML  | xmllint --format -
 
 $(eval $(call compile-cmd,j4make,com.github.lindenb.j4make.J4Make,${commons.codec.jars}))
 
