@@ -111,6 +111,12 @@ public class Graph
 		        TargetImpl.class.cast(root).addPrerequisite(child);
 		        this.scan(childName,in);
 		        }
+		    else if(line.startsWith("make[") && line.contains("]: Entering directory")) {
+			//ignore
+			}
+		    else if(line.startsWith("make: Leaving directory")) {
+			//ignore
+			}
 		    else if(line.startsWith("Must remake target "))
 			     {
 		    	 final String tName = targetName(line);
