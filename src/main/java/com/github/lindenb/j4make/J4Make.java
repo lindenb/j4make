@@ -29,8 +29,11 @@ History:
 package com.github.lindenb.j4make;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,6 +69,7 @@ public class J4Make
 		{
 		FORMAT fmt=FORMAT.DOT;
 		BufferedReader in = null;
+		FileOutputStream fos=null;
 		try {
 			final Options options = new Options();
 			options.addOption(Option.builder("f").
@@ -85,6 +89,12 @@ public class J4Make
 					longOpt("version").
 					desc("Print version and exit").
 					hasArg(false).
+					build()
+					);
+			options.addOption(Option.builder("o").
+					longOpt("out").
+					desc("Output file (default stdout)").
+					hasArg().
 					build()
 					);
 			final CommandLineParser parser = new DefaultParser();
@@ -134,14 +144,36 @@ public class J4Make
 				case RDF: gw = new RdfWriter(); break;
 				default: throw new IllegalArgumentException(""+fmt);
 				}
-			gw.write(this.graph, System.out);
+			final OutputStream out;
+			if(cmdLine.hasOption("o"))
+				{
+				final File fileout = new File(cmdLine.getOptionValue("o"));
+				LOG.info("opening "+fileout);
+				fos = new FileOutputStream(fileout);
+				out = fos;
+				}
+			else
+				{
+				out = System.out;
+				}
+			
+			gw.write(this.graph,out);
+			
+			out.flush();
+			
+			if(fos!=null) {
+				fos.flush();
+				fos.close();
+				fos=null;
+			}
+			
 			return 0;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error("FAILURE", e);
 			return -1;
 		} finally
 		{
-			
+			if(fos!=null) try {fos.close();} catch(Exception er2) {}
 		}
 		}
 	public static void main(final String args[])
