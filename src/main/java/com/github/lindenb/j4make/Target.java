@@ -31,6 +31,7 @@ package com.github.lindenb.j4make;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +49,11 @@ public abstract class Target
 	@SuppressWarnings("unused")
 	private static final Logger LOG= LoggerFactory.getLogger(Graph.class);
 	/** script file */
-	protected List<String> shellLines = new ArrayList<>();
+	protected final List<String> shellLines = new ArrayList<>();
 	/** target name as defined in the Makefile */
 	private String targetName;
 	/** all prerequistites */
-	protected Set<Target> _prerequisites= new LinkedHashSet<>();
+	protected final Set<Target> _prerequisites= new LinkedHashSet<>();
 	/** user data */
 	private Map<String, Object> userData=null;
 	
@@ -61,9 +62,38 @@ public abstract class Target
 		this.targetName = targetName;
 		}
 	
+	/** get parents prerequistes */
 	public Set<Target> getPrerequisites() {
 		return Collections.unmodifiableSet(_prerequisites);
 	}
+	
+	/** get all prerequistes  parents and ancestors */
+	public Set<Target> getAllPrerequisites() {
+		final Set<Target> prq = new HashSet<>();
+		getallprerequisites(prq);
+		return prq;
+	}
+	
+	private  void getallprerequisites(final Set<Target> prqs) {
+		for(final Target p:this._prerequisites)
+			{
+			prqs.add(p);
+			p.getallprerequisites(prqs);
+			}
+		}
+	/** return true if prq is a prerequiste of this target
+	 * It's recursive: it looks deep in the dependencies
+	 * @param prq
+	 * @return true if prq is a prerequisite of this
+	 */
+	public boolean hasPrerequisite(final Target prq) {
+		for(final Target p:this._prerequisites)
+			{
+			if( p.equals(prq) || p.hasPrerequisite(prq)) return true;
+			}
+		return false;
+		}
+	
 	
 	@Override
 	public int hashCode() {
