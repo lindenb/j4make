@@ -130,6 +130,9 @@ public class Graph
 		                else if(line.startsWith("make: Leaving directory")) {
 			                continue;
 			                }
+			            else if(line.startsWith("Invoking recipe from")) {
+                                        continue;
+                                        }
 		    		t.shellLines.add(line);
 		    	 	}
 		    	 }
