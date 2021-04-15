@@ -74,4 +74,4 @@ test: j4make
 $(eval $(call compile-cmd,j4make,com.github.lindenb.j4make.J4Make,${commons.codec.jars}))
 
 ${all_maven_jars}  : 
-	mkdir -p $(dir $@) && wget -O "$@" "http://central.maven.org/maven2/$(patsubst ${lib.dir}/%,%,$@)"
+	mkdir -p $(dir $@) && wget -O "$@" "https://repo1.maven.org/maven2/$(patsubst ${lib.dir}/%,%,$@)"
